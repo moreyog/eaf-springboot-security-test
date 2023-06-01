@@ -1,5 +1,6 @@
 package com.eaf.test.security.filter;
 
+import com.eaf.test.security.custom.JwtUsernamePasswordAuthenticationToken;
 import com.eaf.test.security.service.JwtService;
 import com.eaf.test.security.config.UserInfoUserDetailsService;
 import jakarta.servlet.FilterChain;
@@ -38,7 +39,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                //UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                JwtUsernamePasswordAuthenticationToken authToken = new JwtUsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities(),token);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
